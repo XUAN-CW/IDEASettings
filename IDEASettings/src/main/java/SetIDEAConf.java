@@ -72,8 +72,38 @@ public class SetIDEAConf {
 
     }
 
+    private void setMisc() {
+        String xml = ".idea" + File.separator + "misc.xml";
+        try {
+            //解析xml文件
+            Document document = parseDocument(xml);
+            //获取 component 节点列表
+            NodeList nodeList = document.getElementsByTagName("component");
+            Element element = null;
+            //找到 ProjectRootManager
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                element = (Element) nodeList.item(i);
+                if (element.getAttribute("name").equals("ProjectRootManager")) {
+                    //设为 jdk 大版本
+                    if (element.hasAttribute("languageLevel")) {
+                        element.setAttribute("languageLevel", "JDK_" + getJdkBigVersion());
+                    }
+                    if (element.hasAttribute("languageLevel")) {
+                        element.setAttribute("project-jdk-name",getJdkBigVersion());
+                    }
+                }
+            }
+            //保存 xml 文件
+            saveDocument(document);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
+        System.out.println(123);
         SetIDEAConf setIDEAConf = new SetIDEAConf();
         setIDEAConf.setCompiler();
+        setIDEAConf.setMisc();
     }
 }
