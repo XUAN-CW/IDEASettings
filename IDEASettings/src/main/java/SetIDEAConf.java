@@ -64,6 +64,7 @@ public class SetIDEAConf {
             Element element = (Element)nodeList.item(0);
             //设为 jdk 大版本
             element.setAttribute("target",getJdkBigVersion());
+            //保存 xml 文件
             saveDocument(document);
         } catch (Exception e) {
             e.printStackTrace();
