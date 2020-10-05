@@ -54,15 +54,7 @@ public class SetIDEAConf {
             Transformer tf = factory2.newTransformer();
             tf.transform(new DOMSource(document), new StreamResult(new FileOutputStream(xml)));
 
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (TransformerConfigurationException e) {
-            e.printStackTrace();
-        } catch (TransformerException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
