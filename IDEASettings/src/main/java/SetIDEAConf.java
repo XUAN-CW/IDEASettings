@@ -13,6 +13,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -35,25 +36,35 @@ public class SetIDEAConf {
         return properties.getProperty("java.version").split("\\.")[0];
     }
 
-    private void setCompiler(){
-        String xml = ".idea"+ File.separator +"compiler.xml";
+    private Document parseDocument(String xml) throws ParserConfigurationException, IOException, SAXException {
         //获得dom解析工厂类
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        //得到dom解析器
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        //解析xml文件
+        return  builder.parse(xml);
+    }
+
+    private void saveDocument(Document document) throws TransformerException, FileNotFoundException {
+        //把内存中更新后对象树，重新定回到xml文档中
+        TransformerFactory factory2 = TransformerFactory.newInstance();
+        Transformer tf = factory2.newTransformer();
+        //document.getDocumentURI() 需要去除前面的 file:\ 六个字符
+        tf.transform(new DOMSource(document), new StreamResult(new FileOutputStream(document.getDocumentURI().substring(5))));
+    }
+
+    private void setCompiler(){
+        String xml = ".idea"+ File.separator +"compiler.xml";
         try {
-            //得到dom解析器
-            DocumentBuilder builder = factory.newDocumentBuilder();
             //解析xml文件
-            Document document = builder.parse(xml);
+            Document document = parseDocument(xml);
             //获取 bytecodeTargetLevel 节点列表
             NodeList nodeList = document.getElementsByTagName("bytecodeTargetLevel");
             //我估计 bytecodeTargetLevel 标签只有一个，所以在这里我直接取第一个
             Element element = (Element)nodeList.item(0);
+            //设为 jdk 大版本
             element.setAttribute("target",getJdkBigVersion());
-            //把内存中更新后对象树，重新定回到xml文档中
-            TransformerFactory factory2 = TransformerFactory.newInstance();
-            Transformer tf = factory2.newTransformer();
-            tf.transform(new DOMSource(document), new StreamResult(new FileOutputStream(xml)));
-
+            saveDocument(document);
         } catch (Exception e) {
             e.printStackTrace();
         }
