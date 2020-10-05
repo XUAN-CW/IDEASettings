@@ -29,12 +29,16 @@ import java.util.Properties;
  */
 public class SetIDEAConf {
 
+    private String getJdkBigVersion(){
+        Properties properties = System.getProperties();
+        //根据环境变量获取 java.version 后分割，取第一个分割出来的（也就是 jdk 的大版本）
+        return properties.getProperty("java.version").split("\\.")[0];
+    }
+
     private void setCompiler(){
         String xml = ".idea"+ File.separator +"compiler.xml";
         //获得dom解析工厂类
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        Properties properties = System.getProperties();
-        System.out.println(properties.getProperty("java.version"));
         try {
             //得到dom解析器
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -44,8 +48,7 @@ public class SetIDEAConf {
             NodeList nodeList = document.getElementsByTagName("bytecodeTargetLevel");
             //我估计 bytecodeTargetLevel 标签只有一个，所以在这里我直接取第一个
             Element element = (Element)nodeList.item(0);
-            //根据环境变量获取 java.version 后分割，取第一个分割出来的（也就是 jdk 的大版本）作为 target
-            element.setAttribute("target",properties.getProperty("java.version").split("\\.")[0]);
+            element.setAttribute("target",getJdkBigVersion());
             //把内存中更新后对象树，重新定回到xml文档中
             TransformerFactory factory2 = TransformerFactory.newInstance();
             Transformer tf = factory2.newTransformer();
