@@ -30,6 +30,7 @@ import java.util.Properties;
 public class SetIDEAConf {
 
     private void setCompiler(){
+        String xml = ".idea"+ File.separator +"compiler.xml";
         //获得dom解析工厂类
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         Properties properties = System.getProperties();
@@ -38,7 +39,7 @@ public class SetIDEAConf {
             //得到dom解析器
             DocumentBuilder builder = factory.newDocumentBuilder();
             //解析xml文件
-            Document document = builder.parse(".idea"+ File.separator +"compiler.xml");
+            Document document = builder.parse(xml);
             //获取 bytecodeTargetLevel 节点列表
             NodeList nodeList = document.getElementsByTagName("bytecodeTargetLevel");
             //我估计 bytecodeTargetLevel 标签只有一个，所以在这里我直接取第一个
@@ -48,7 +49,7 @@ public class SetIDEAConf {
             //把内存中更新后对象树，重新定回到xml文档中
             TransformerFactory factory2 = TransformerFactory.newInstance();
             Transformer tf = factory2.newTransformer();
-            tf.transform(new DOMSource(document), new StreamResult(new FileOutputStream(".idea"+ File.separator +"compiler.xml")));
+            tf.transform(new DOMSource(document), new StreamResult(new FileOutputStream(xml)));
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
