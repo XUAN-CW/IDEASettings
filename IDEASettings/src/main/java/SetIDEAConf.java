@@ -68,7 +68,7 @@ public class SetIDEAConf {
             //设为 jdk 大版本
             element.setAttribute("target",getJdkBigVersion());
             //对 module 进行同样的设置
-            NodeList modules =  element.getChildNodes();
+            NodeList modules =  element.getElementsByTagName("module");
             for (int i = 0; i < modules.getLength(); i++) {
                 Element currentElement = (Element) modules.item(i);
                 if (currentElement.hasAttribute("target")){
