@@ -1,5 +1,6 @@
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -64,6 +65,14 @@ public class SetIDEAConf {
             Element element = (Element)nodeList.item(0);
             //设为 jdk 大版本
             element.setAttribute("target",getJdkBigVersion());
+            //对 module 进行同样的设置
+            NodeList modules =  element.getChildNodes();
+            for (int i = 0; i < modules.getLength(); i++) {
+                Element currentElement = (Element) modules.item(i);
+                if (currentElement.hasAttribute("target")){
+                    currentElement.setAttribute("target",getJdkBigVersion());
+                }
+            }
             //保存 xml 文件
             saveDocument(document);
         } catch (Exception e) {
