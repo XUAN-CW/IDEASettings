@@ -31,6 +31,8 @@ import java.util.Properties;
  */
 public class SetIDEAConf {
 
+    String projectPath = "";
+
     private String getJdkBigVersion(){
         Properties properties = System.getProperties();
         //根据环境变量获取 java.version 后分割，取第一个分割出来的（也就是 jdk 的大版本）
@@ -55,7 +57,7 @@ public class SetIDEAConf {
     }
 
     private void setCompiler(){
-        String xml = ".idea"+ File.separator +"compiler.xml";
+        String xml = projectPath + ".idea"+ File.separator +"compiler.xml";
         try {
             //解析xml文件
             Document document = parseDocument(xml);
@@ -82,7 +84,7 @@ public class SetIDEAConf {
     }
 
     private void setMisc() {
-        String xml = ".idea" + File.separator + "misc.xml";
+        String xml =  projectPath + ".idea" + File.separator + "misc.xml";
         try {
             //解析xml文件
             Document document = parseDocument(xml);
@@ -110,7 +112,7 @@ public class SetIDEAConf {
     }
 
     private void setWorkspace() {
-        String xml = ".idea" + File.separator + "workspace.xml";
+        String xml = projectPath + ".idea" + File.separator + "workspace.xml";
         String M2_HOME = System.getenv("M2_HOME");
         String mavenSettings = M2_HOME + File.separator+"conf"+File.separator+"settings.xml";
         try {
