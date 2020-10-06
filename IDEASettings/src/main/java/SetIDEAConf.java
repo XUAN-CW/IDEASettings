@@ -28,6 +28,8 @@ import java.util.Properties;
  *
  * @purpose
  * @errors
+ *   [错误：“unknown protocol: d”致命错误：“无法编译样式表”](https://blog.csdn.net/iteye_7067/article/details/82174825)
+ *      解决方法:不用中文目录
  */
 public class SetIDEAConf {
 
