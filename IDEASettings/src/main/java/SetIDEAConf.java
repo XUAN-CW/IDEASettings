@@ -100,10 +100,63 @@ public class SetIDEAConf {
         }
     }
 
+    private void setWorkspace() {
+        String xml = ".idea" + File.separator + "workspace.xml";
+        String M2_HOME = System.getenv("M2_HOME");
+        String mavenSettings = M2_HOME + File.separator+"conf"+File.separator+"settings.xml";
+        try {
+            //解析xml文件
+            Document document = parseDocument(xml);
+            //获取 MavenGeneralSettings 节点列表
+            NodeList options = document.getElementsByTagName("option");
+            for (int i = 0; i < options.getLength(); i++) {
+                //获取当前结点
+                Element currentElement = (Element) options.item(i);
+                //如果 name=mavenHome ,设置 value=M2_HOME
+                if (currentElement.getAttribute("name").equals("mavenHome")){
+                    currentElement.setAttribute("value",M2_HOME);
+                }
+                //如果 name=userSettingsFile ,设置 value=mavenSettings
+                if (currentElement.getAttribute("name").equals("userSettingsFile")){
+                    currentElement.setAttribute("value",mavenSettings);
+                }
+                //如果 name=localRepository ,设置 value=localRepositoryAbsolutePath ,localRepository 在安装 maven 时已设置
+                if (currentElement.getAttribute("name").equals("localRepository")){
+                    //localRepositoryAbsolutePath 从 mavenSettings 的 localRepository 标签中获取
+                    Document localRepositoryDocument = parseDocument(mavenSettings);
+                    Element localRepositoryElement = (Element)localRepositoryDocument.getElementsByTagName("localRepository").item(0);
+                    //获取 maven 中 localRepository 配置的 localRepositoryPath
+                    String localRepositoryPath = localRepositoryElement.getTextContent();
+                    //建立 localRepository 对应的文件,以便操作
+                    File localRepositoryFile = new File(localRepositoryPath);
+                    //如果 maven 中使用的不是绝对路径,需要进行处理,将其转化为绝对路径
+                    if (!localRepositoryFile.getAbsolutePath().equals(localRepositoryPath)){
+                        //使用相对路径,以 mavenSettings 为起点,进行变换
+                        localRepositoryFile = new File(mavenSettings);
+                        String[] temp = localRepositoryPath.split("/");
+                        for (int j = 0; j < temp.length; j++) {
+                            if (temp[j].equals("..")){
+                                localRepositoryFile = localRepositoryFile.getParentFile();
+                            }else {
+                                localRepositoryFile = new File(localRepositoryFile+File.separator+temp[j]);
+                            }
+                        }
+                    }
+                    currentElement.setAttribute("value",localRepositoryFile.getAbsolutePath());
+                }
+            }
+            //保存 xml 文件
+            saveDocument(document);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println(123);
         SetIDEAConf setIDEAConf = new SetIDEAConf();
         setIDEAConf.setCompiler();
         setIDEAConf.setMisc();
+        setIDEAConf.setWorkspace();
     }
 }
