@@ -57,7 +57,7 @@ public class SetIDEAConf {
     }
 
     private void setCompiler(){
-        String xml = projectPath + ".idea"+ File.separator +"compiler.xml";
+        String xml = projectPath + File.separator + ".idea"+ File.separator +"compiler.xml";
         try {
             //解析xml文件
             Document document = parseDocument(xml);
@@ -84,7 +84,7 @@ public class SetIDEAConf {
     }
 
     private void setMisc() {
-        String xml =  projectPath + ".idea" + File.separator + "misc.xml";
+        String xml =  projectPath + File.separator + ".idea" + File.separator + "misc.xml";
         try {
             //解析xml文件
             Document document = parseDocument(xml);
@@ -112,7 +112,7 @@ public class SetIDEAConf {
     }
 
     private void setWorkspace() {
-        String xml = projectPath + ".idea" + File.separator + "workspace.xml";
+        String xml = projectPath + File.separator + ".idea" + File.separator + "workspace.xml";
         String M2_HOME = System.getenv("M2_HOME");
         String mavenSettings = M2_HOME + File.separator+"conf"+File.separator+"settings.xml";
         try {
